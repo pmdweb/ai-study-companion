@@ -1,0 +1,222 @@
+Perfeito — bora colocar o AI Study Companion – Mentor de Entrevistas de pé do jeito mais rápido possível, sem firula. Abaixo está um plano “do zero ao demo” focado em MVP funcional em 1–2 dias.
+
+Objetivo do MVP (1 frase)
+
+Gerar entrevista simulada (técnica/comportamental), coletar respostas do usuário e dar feedback estruturado em STAR + pontos de melhoria, usando seu PDF de perguntas como base.
+
+Critérios de sucesso (checklist)
+
+ Upload do PDF (ou usar o seu já pronto) e indexação local.
+
+ Tela única para: escolher perguntas → responder → receber feedback STAR.
+
+ Feedback com: clareza, lógica, credibilidade, sugestões e resposta reescrita.
+
+ Exportar sessão (JSON/Markdown) com perguntas, resposta original e otimizada.
+
+ Rodando local (sem dependência de infra externa).
+
+Stack mínima (rápida de subir)
+
+UI: Streamlit
+
+NLP: transformers (modelo leve instrucional) + spacy (limpeza, sentenças)
+
+RAG leve: chromadb (index em disco)
+
+PDF: pymupdf (extração robusta)
+
+Infra local: Python 3.10+, sem Docker (agiliza) — opcional Docker depois
+
+Dica: se quiser zero API externa, use um modelo pequeno local (ex.: google/flan-t5-base ou mistral-7b-instruct via text-generation-webui/llama.cpp). Se já tiver chave de LLM hosted, plugue depois; o MVP roda local com heurísticas + modelo pequeno.
+
+Estrutura do repositório (simples e direta)
+ai-study-companion/
+  app.py                 # Streamlit (UI)
+  requirements.txt
+  data/
+    corpus/              # PDFs e textos indexados
+    chroma/              # base vetorial em disco
+  src/
+    ingest_pdf.py        # extrai e limpa texto
+    splitters.py         # quebra em chunks
+    embedder.py          # gera embeddings (Sentencetransformers)
+    rag.py               # busca e ranking
+    star_rubric.py       # avaliador STAR + heurísticas
+    rewrite.py           # reescrita da resposta
+    export.py            # salva sessão (md/json)
+
+
+requirements.txt (essencial)
+
+streamlit
+pymupdf
+spacy
+sentence-transformers
+chromadb
+transformers
+accelerate
+torch --extra-index-url https://download.pytorch.org/whl/cu121
+
+
+Se sua GPU não for CUDA 12.1, troque o torch pela variante correta ou instale CPU-only.
+
+Pipeline de dados (simples)
+
+Ingestão: lê PDF → extrai perguntas → normaliza (lower, trims, remove duplicata).
+
+Indexação: cria embeddings (e.g., all-MiniLM-L6-v2) → salva no Chroma.
+
+Seleção de pergunta: UI mostra lista por categoria (General/Tech/Behavioral).
+
+Resposta do usuário: campo texto + opção “gravar áudio depois” (fora do MVP).
+
+Avaliação:
+
+Heurística STAR: checa presença de S, T, A, R (palavras-âncora + estrutura).
+
+Modelo instrucional: gera feedback crítico e re-escreve no padrão STAR.
+
+Sinaliza clareza, coerência, credibilidade (dados e exemplos).
+
+Export: salva pergunta, resposta original, críticas, reescrita, follow-ups.
+
+Fluxo da UI (uma tela)
+
+Upload/Selecionar PDF → botão “Indexar”.
+
+Escolher pergunta (ou “Surpreenda-me”).
+
+Responder (textarea) → Avaliar.
+
+Feedback (blocos):
+
+STAR: ✅/⚠️ para cada pilar
+
+Críticas (com “porquê”)
+
+Sugestões específicas
+
+Resposta otimizada (90s)
+
+Follow-ups que o recrutador faria
+
+Exportar sessão (MD/JSON).
+
+Heurística STAR (rápida e eficiente)
+
+Situação: checar se há contexto (tempo, lugar, empresa, problema).
+
+Tarefa: presença de objetivo claro (“minha responsabilidade era…”, “meta…”).
+
+Ação: verbos de ação, etapas específicas (evita genérico).
+
+Resultado: números/impacto, qualidade, tempo, custo, satisfação.
+
+Score 0–2 por pilar (máx 8). Se Resultado <2, pedir números ou métricas proxy.
+
+Prompt base (modelo instrucional pequeno)
+
+Avaliação (resumo do prompt):
+
+Avalie a resposta a seguir sobre a pergunta “{pergunta}” no formato STAR.
+
+Liste falhas de comunicação, raciocínio e credibilidade (explique porquê).
+
+Sugira melhorias específicas e exemplifique.
+
+Reescreva a resposta em STAR (máx 90s de fala).
+
+Liste 3–5 follow-ups que um recrutador faria.
+Use tom profissional internacional, sem jargões locais.
+
+Passo-a-passo de implementação (ordem exata)
+
+Criar venv e instalar deps
+
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm
+
+
+Ingestão + Indexação
+
+ingest_pdf.py: extrai texto do seu Banco de Perguntas e salva em data/corpus/qa.json.
+
+embedder.py: gera embeddings e grava no data/chroma/.
+
+RAG mínimo
+
+rag.py: dado um tópico (“behavioral”), retorna 10 perguntas relevantes.
+
+STAR Heurística
+
+star_rubric.py: função score_star(text) → dict com S/T/A/R, score e dicas.
+
+Reescrita
+
+rewrite.py: função rewrite_star(pergunta, resposta). Se sem LLM, usa templates + heurística para forçar S/T/A/R; com LLM, usa o prompt acima.
+
+UI (app.py)
+
+Sidebar: Upload do PDF e botão “Indexar”.
+
+Body: Seleção de pergunta → textarea → botão “Avaliar” → mostra feedback.
+
+Botão “Exportar sessão”.
+
+Testes rápidos
+
+Responder 2–3 perguntas e validar se feedback e reescrita fazem sentido.
+
+Gravação do demo
+
+Streamlit em 1280×720 (16:9).
+
+Clips curtos: indexar → escolher pergunta → responder → avaliar → exportar.
+
+Roteiro de vídeo (90s) pronto pra gravar
+
+0–10s: Título, seu nome, “AI Study Companion – Entrevistas”.
+
+10–20s: Problema (“respostas vagas, sem STAR, difícil medir impacto”).
+
+20–60s: Demo (upload/indexar, escolher pergunta, responder, avaliar, ver reescrita STAR + follow-ups).
+
+60–80s: Impacto (clareza, tempo de preparo, confiança).
+
+80–90s: Próximos passos (voz, JD parser, métricas) + call-to-action.
+
+Slides (4–6 páginas, 16:9)
+
+Título + objetivo
+
+Dói do usuário & solução
+
+Arquitetura MVP (fluxo em 5 blocos)
+
+Tela do app (mock/screenshot)
+
+Rubrica STAR + critérios de nota
+
+Próximos passos & contato
+
+Roadmap curtíssimo (D0–D2)
+
+D0 (manhã): setup + ingestão/indexação + UI básica
+
+D0 (tarde): heurística STAR + reescrita (template) + export
+
+D1 (manhã): integrar modelo instrucional p/ reescrita + refino do feedback
+
+D1 (tarde): testes com 5 respostas diferentes + gravação do vídeo
+
+D2: polimento e (opcional) empacotar em Docker
+
+Riscos & cortes (pra não travar)
+
+Sem GPU? Use MiniLM para embeddings e reescrita por template (funciona!).
+
+LLM local pesado? Adie e mantenha heurística + flan-t5-base.
+
+Sem tempo pra RAG? Use seu PDF como lista direta (já resolve).
