@@ -20,6 +20,19 @@
 **Tools**: GitHub Actions, Docker, monitoring tools
 **Commands**: `pytest`, `docker build`, deployment scripts
 
+### 📚 Documentation Agent (`agent-documentation.md`)
+
+**Focus**: Technical writing, API docs, user guides
+**Tools**: Markdown editors, MkDocs, Sphinx
+**Commands**: Documentation generation, README updates
+
+### 🎯 Presentation Agent (`agent-presentation.md`)
+
+**Focus**: Business presentations, demos, pitch decks
+**Tools**: PowerPoint, Canva, demo recording
+**Commands**: Slide creation, demo scripts, marketing materials
+**Commands**: `pytest`, `docker build`, deployment scripts
+
 ## How to Use Multiple Agents
 
 ### **Method 1: Sequential Workflow**
