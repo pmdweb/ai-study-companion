@@ -21,28 +21,188 @@ def main():
     st.markdown("**STAR Methodology Interview Feedback Tool**")
     st.markdown("---")
     
-    # Sidebar for PDF upload (future feature)
+    # Initialize session state at the very beginning
+    if 'evaluation_result' not in st.session_state:
+        st.session_state.evaluation_result = None
+    if 'evaluated_response' not in st.session_state:
+        st.session_state.evaluated_response = ""
+    if 'evaluated_question' not in st.session_state:
+        st.session_state.evaluated_question = ""
+    if 'custom_questions' not in st.session_state:
+        st.session_state.custom_questions = []
+    if 'rewrite_result' not in st.session_state:
+        st.session_state.rewrite_result = None
+    
+    # Debug option (remove in production)
+    with st.expander("🔧 Debug Options", expanded=False):
+        if st.button("🗑️ Clear All Cache & Session State"):
+            st.cache_data.clear()
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            st.success("✅ All cache and session state cleared!")
+            st.rerun()
+    
+    # Sidebar for question selection
     with st.sidebar:
         st.header("📄 Question Bank")
-        st.info("PDF upload feature coming soon!")
         
-        # Sample questions for now
-        st.subheader("Sample Questions")
-        sample_questions = [
-            "Tell me about a time you had to solve a difficult problem",
-            "Describe a situation where you had to work with a difficult team member",
-            "Give an example of a time you had to meet a tight deadline",
-            "Tell me about a time you had to learn something new quickly",
-            "Describe a situation where you had to lead a project"
-        ]
-        
-        selected_question = st.selectbox(
-            "Choose a question:",
-            options=["Select a question..."] + sample_questions
+        # Question input method selection
+        question_method = st.radio(
+            "How would you like to select a question?",
+            options=["📋 Choose from samples", "✍️ Enter custom question", "📄 Upload PDF (Coming Soon)"],
+            help="Choose your preferred method for selecting interview questions"
         )
+        
+        selected_question = None
+        
+        if question_method == "📋 Choose from samples":
+            # Sample questions
+            st.subheader("Sample Questions")
+            sample_questions = [
+                "Tell me about a time you had to solve a difficult problem",
+                "Describe a situation where you had to work with a difficult team member", 
+                "Give an example of a time you had to meet a tight deadline",
+                "Tell me about a time you had to learn something new quickly",
+                "Describe a situation where you had to lead a project",
+                "Tell me about a time you had to handle a conflict at work",
+                "Describe a challenging goal you set and how you achieved it",
+                "Give an example of when you had to adapt to a significant change",
+                "Tell me about a time you made a mistake and how you handled it",
+                "Describe a situation where you had to influence others without authority"
+            ]
+            
+            # Remove duplicates and ensure clean list
+            sample_questions = list(dict.fromkeys(sample_questions))  # Remove duplicates while preserving order
+            
+            # Create fresh options list without any caching issues
+            dropdown_options = ["-- Select a question --"]
+            dropdown_options.extend(sample_questions)
+            
+            selected_question = st.selectbox(
+                "Choose a question:",
+                options=dropdown_options,
+                help="Select from our curated list of common interview questions"
+            )
+            
+        elif question_method == "✍️ Enter custom question":
+            # Custom question input
+            st.subheader("Custom Question")
+            custom_question = st.text_area(
+                "Enter your interview question:",
+                placeholder="Type your own interview question here...\n\nExample: Tell me about a time when you had to work under pressure to deliver a project on time.",
+                height=100,
+                help="Enter any behavioral or technical interview question you'd like to practice"
+            )
+            
+            if custom_question.strip():
+                selected_question = custom_question.strip()
+                
+                # Add button to save custom question
+                col1, col2 = st.columns([1, 1])
+                with col1:
+                    if st.button("💾 Save Question", help="Save this question for future use"):
+                        if selected_question not in st.session_state.custom_questions:
+                            st.session_state.custom_questions.append(selected_question)
+                            st.success("✅ Question saved!")
+                        else:
+                            st.info("ℹ️ Question already saved")
+                
+                with col2:
+                    st.success(f"✅ Custom question ready!")
+            else:
+                st.info("👆 Enter a question above to get started")
+            
+            # Show saved custom questions
+            if st.session_state.custom_questions:
+                st.subheader("📚 Your Saved Questions")
+                saved_question_choice = st.selectbox(
+                    "Select from your saved questions:",
+                    options=["Choose a saved question..."] + [f"{q[:60]}{'...' if len(q) > 60 else ''}" for q in st.session_state.custom_questions],
+                    help="Select from questions you've previously saved"
+                )
+                
+                if saved_question_choice and saved_question_choice != "Choose a saved question...":
+                    # Find the full question text
+                    for i, saved_q in enumerate(st.session_state.custom_questions):
+                        if saved_question_choice.startswith(saved_q[:60]):
+                            selected_question = saved_q
+                            break
+                    
+                    col1, col2 = st.columns([3, 1])
+                    with col1:
+                        st.success(f"✅ Selected saved question")
+                    with col2:
+                        if st.button("🗑️ Delete", help="Delete this saved question"):
+                            # Find and remove the question
+                            for i, saved_q in enumerate(st.session_state.custom_questions):
+                                if saved_question_choice.startswith(saved_q[:60]):
+                                    st.session_state.custom_questions.pop(i)
+                                    st.rerun()
+                                    break
+                
+        else:  # PDF Upload (Coming Soon)
+            st.subheader("PDF Upload")
+            st.info("📄 PDF upload feature coming soon!")
+            st.markdown("""
+            **Coming Features:**
+            - Upload your company's interview question bank
+            - Extract questions automatically from PDFs
+            - Categorize questions by type (behavioral, technical, etc.)
+            - Search and filter questions
+            """)
+        
+        # Question category helper (for all methods)
+        if selected_question and selected_question not in ["Select a question...", "-- Choose a question --", "-- Select a question --"]:
+            st.markdown("---")
+            st.subheader("💡 Question Analysis")
+            
+            # Analyze question type
+            question_lower = selected_question.lower()
+            question_types = []
+            
+            if any(word in question_lower for word in ['team', 'conflict', 'difficult person', 'leadership', 'lead']):
+                question_types.append("👥 Leadership/Teamwork")
+            if any(word in question_lower for word in ['problem', 'challenge', 'difficult', 'issue']):
+                question_types.append("🔧 Problem-Solving")
+            if any(word in question_lower for word in ['deadline', 'pressure', 'time', 'urgent']):
+                question_types.append("⏰ Time Management")
+            if any(word in question_lower for word in ['change', 'adapt', 'new', 'learn']):
+                question_types.append("🔄 Adaptability")
+            if any(word in question_lower for word in ['mistake', 'failure', 'wrong', 'error']):
+                question_types.append("📚 Learning from Failure")
+            
+            if question_types:
+                st.write("**Question Type(s):**")
+                for qtype in question_types:
+                    st.write(f"• {qtype}")
+            else:
+                st.write("**Question Type:** 🎯 General Behavioral")
+            
+            # STAR reminder specific to question type
+            st.write("**STAR Focus Areas:**")
+            if "👥 Leadership/Teamwork" in question_types:
+                st.write("• **Situation**: Team context, roles, dynamics")
+                st.write("• **Task**: Your leadership responsibility")
+                st.write("• **Action**: How you influenced/managed people")
+                st.write("• **Result**: Team performance, relationships improved")
+            elif "🔧 Problem-Solving" in question_types:
+                st.write("• **Situation**: What was broken/challenging")
+                st.write("• **Task**: Your role in solving it")
+                st.write("• **Action**: Analysis steps, solution approach")
+                st.write("• **Result**: Problem resolved, metrics improved")
+            elif "⏰ Time Management" in question_types:
+                st.write("• **Situation**: Time constraints, competing priorities")
+                st.write("• **Task**: What needed to be delivered when")
+                st.write("• **Action**: How you organized/prioritized")
+                st.write("• **Result**: Met deadline, quality maintained")
+            else:
+                st.write("• **Situation**: Context and background")
+                st.write("• **Task**: Your specific responsibility")
+                st.write("• **Action**: What you did (be specific)")
+                st.write("• **Result**: Outcome with numbers/impact")
     
     # Main area
-    if selected_question and selected_question != "Select a question...":
+    if selected_question and selected_question not in ["Select a question...", "-- Choose a question --", "-- Select a question --"]:
         st.subheader("📝 Interview Question")
         st.write(f"**{selected_question}**")
         
@@ -52,14 +212,6 @@ def main():
             placeholder="Type your response here using the STAR methodology (Situation, Task, Action, Result)...",
             height=200
         )
-        
-        # Initialize session state for evaluation
-        if 'evaluation_result' not in st.session_state:
-            st.session_state.evaluation_result = None
-        if 'evaluated_response' not in st.session_state:
-            st.session_state.evaluated_response = ""
-        if 'evaluated_question' not in st.session_state:
-            st.session_state.evaluated_question = ""
         
         # Evaluate button
         if st.button("🔍 Evaluate Response", type="primary"):
@@ -131,10 +283,6 @@ def main():
             st.markdown("---")
             st.subheader("✨ AI-Enhanced Response")
             
-            # Initialize session state for rewrite results
-            if 'rewrite_result' not in st.session_state:
-                st.session_state.rewrite_result = None
-            
             col1, col2 = st.columns([1, 1])
             
             with col1:
@@ -198,9 +346,14 @@ def main():
                 st.subheader("📄 Export Session")
                 
                 if st.button("📄 Export Session", type="primary"):
+                    # Determine question source
+                    question_source = "Custom Question" if question_method == "✍️ Enter custom question" else "Sample Question"
+                    
                     # Prepare export data
                     export_data = {
                         "question": selected_question,
+                        "question_source": question_source,
+                        "question_method": question_method,
                         "original_response": user_response,
                         "original_evaluation": evaluation,
                         "enhanced_response": st.session_state.rewrite_result['rewritten_response'] if st.session_state.rewrite_result else None,
@@ -214,6 +367,7 @@ def main():
                     export_text = f"""AI Study Companion - Interview Session Report
 {'='*50}
 
+QUESTION SOURCE: {question_source}
 QUESTION:
 {selected_question}
 

@@ -15,9 +15,11 @@ You are responsible for creating compelling presentations, demos, and business c
 ## Core Presentation Types
 
 ### 1. Executive Summary (5-7 slides)
+
 **Target Audience:** Executives, investors, decision-makers
 
 **Structure:**
+
 - Slide 1: Problem Statement & Market Opportunity
 - Slide 2: Solution Overview (AI Study Companion)
 - Slide 3: Key Features & Benefits
@@ -27,9 +29,11 @@ You are responsible for creating compelling presentations, demos, and business c
 - Slide 7: Next Steps & Call to Action
 
 ### 2. Technical Deep Dive (10-15 slides)
+
 **Target Audience:** Developers, technical teams, architects
 
 **Structure:**
+
 - Architecture Overview
 - Technology Stack Justification
 - STAR Methodology Implementation
@@ -40,9 +44,11 @@ You are responsible for creating compelling presentations, demos, and business c
 - Development Roadmap
 
 ### 3. Product Demo (8-12 slides)
+
 **Target Audience:** Users, customers, stakeholders
 
 **Structure:**
+
 - User Pain Points
 - Solution Introduction
 - Live Demo Walkthrough
@@ -52,9 +58,11 @@ You are responsible for creating compelling presentations, demos, and business c
 - Getting Started Guide
 
 ### 4. Investor Pitch (12-15 slides)
+
 **Target Audience:** VCs, angel investors, funding sources
 
 **Structure:**
+
 - Market Problem & Size
 - Solution & Unique Value Proposition
 - Business Model
@@ -70,6 +78,7 @@ You are responsible for creating compelling presentations, demos, and business c
 ### Visual Design Principles
 
 **Layout & Typography:**
+
 - Clean, professional design with consistent branding
 - 16:9 aspect ratio for modern displays
 - High contrast text (dark on light backgrounds)
@@ -78,13 +87,15 @@ You are responsible for creating compelling presentations, demos, and business c
 - 24pt minimum font size for readability
 
 **Color Scheme:**
+
 - Primary: Professional blue (#2B5AA0)
-- Secondary: Success green (#28A745) 
+- Secondary: Success green (#28A745)
 - Accent: Warning orange (#FD7E14)
 - Neutral: Dark gray (#343A40)
 - Background: White or light gray (#F8F9FA)
 
 **Content Structure:**
+
 - One main idea per slide
 - Clear, action-oriented headlines
 - Supporting visuals (charts, screenshots, diagrams)
@@ -125,6 +136,7 @@ You are responsible for creating compelling presentations, demos, and business c
 ## Common Tasks
 
 **Create Executive Presentation:**
+
 - Define target audience and objectives
 - Research market data and competitive landscape
 - Develop compelling narrative flow
@@ -132,6 +144,7 @@ You are responsible for creating compelling presentations, demos, and business c
 - Include actionable next steps
 
 **Demo Preparation:**
+
 - Script timing and flow
 - Prepare demo data and scenarios
 - Test all functionality beforehand
@@ -139,6 +152,7 @@ You are responsible for creating compelling presentations, demos, and business c
 - Practice handling Q&A
 
 **Marketing Materials:**
+
 - Feature benefit matrices
 - Customer success stories
 - Competitive differentiation charts

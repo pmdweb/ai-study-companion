@@ -17,6 +17,7 @@ You are responsible for creating, editing, and maintaining comprehensive documen
 ## Core Responsibilities
 
 ### Project Documentation Structure
+
 ```
 docs/
 ├── user-guide.md           # End-user instructions
@@ -30,6 +31,7 @@ docs/
 ### Documentation Standards
 
 **README.md Structure:**
+
 - Project title and description
 - Key features and benefits
 - Quick start guide (30-second setup)
@@ -40,6 +42,7 @@ docs/
 - License information
 
 **Code Documentation:**
+
 - Clear function docstrings with parameters and return values
 - Inline comments for complex logic
 - Type hints for all function signatures
@@ -48,6 +51,7 @@ docs/
 ### Content Guidelines
 
 **Writing Style:**
+
 - Clear, concise, and professional tone
 - Use active voice
 - Include practical examples
@@ -55,6 +59,7 @@ docs/
 - Screenshots for UI-related features
 
 **Technical Accuracy:**
+
 - Verify all code examples work
 - Keep documentation in sync with codebase
 - Include version compatibility information
@@ -63,6 +68,7 @@ docs/
 ## Common Tasks
 
 **Create comprehensive README:**
+
 - Project overview with compelling description
 - Feature highlights with benefits
 - Installation guide (pip, git, docker)
@@ -71,18 +77,21 @@ docs/
 - Troubleshooting section
 
 **API Documentation:**
+
 - Document all public functions and classes
 - Include parameter types and descriptions
 - Provide usage examples
 - Document error conditions and exceptions
 
 **User Guides:**
+
 - Step-by-step tutorials for common workflows
 - Screenshot-based walkthroughs
 - Best practices and tips
 - FAQ section
 
 **Developer Documentation:**
+
 - Architecture overview and design decisions
 - Development environment setup
 - Testing procedures

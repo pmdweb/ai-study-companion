@@ -202,74 +202,149 @@ def _comprehensive_rewrite(question: str, original_response: str, evaluation: Di
     return rewritten
 
 def _generate_situation_content(original: str, evaluation: Dict) -> str:
-    """Generate enhanced Situation content"""
+    """Generate enhanced Situation content based on original response"""
     try:
-        if evaluation['situation']['score'] >= 1:
-            base_content = "Building on your experience, "
+        original_lower = original.lower()
+        
+        # Analyze the original response for context clues
+        if 'bug' in original_lower or 'fix' in original_lower or 'error' in original_lower:
+            return "At my previous company, we discovered a critical system bug that was affecting user productivity and causing data inconsistencies. This issue emerged during our peak usage hours when downtime would have the maximum business impact."
+        
+        elif 'team' in original_lower or 'colleague' in original_lower:
+            return "In my role as team lead, we were facing interpersonal challenges that were impacting project delivery and team morale. The situation developed when conflicting work styles and communication preferences created tension within our cross-functional team."
+        
+        elif 'deadline' in original_lower or 'time' in original_lower:
+            return "During Q4 at my previous organization, we received an urgent client request with an extremely tight deadline that required us to compress a typical 3-month project into 3 weeks. This coincided with several team members being on planned leave."
+        
+        elif 'project' in original_lower:
+            return "While working on a high-visibility project at [Company], we encountered unexpected technical constraints that threatened to derail our delivery timeline. The project was critical for our department's annual objectives and had executive visibility."
+        
         else:
-            base_content = "In my previous role at TechCorp, "
-        
-        # Simple, working template
-        return f"{base_content}we faced a critical challenge when our main system experienced unexpected issues affecting customer operations. This occurred during a high-traffic period when system reliability was crucial for business continuity."
-        
+            # Generic but improved version
+            return "In my previous role at [Company Name], we faced a complex challenge that required both technical expertise and strategic thinking. The situation was time-sensitive and had potential implications for both our team's performance and broader organizational goals."
+            
     except Exception:
-        return "At my previous company, we encountered a significant technical challenge that required immediate attention and strategic problem-solving."
+        return "At my previous company, we encountered a significant challenge that required immediate attention and collaborative problem-solving."
 
 def _generate_task_content(original: str, evaluation: Dict) -> str:
-    """Generate enhanced Task content"""
+    """Generate enhanced Task content based on original response"""
     try:
-        if evaluation['task']['score'] >= 1:
-            base_content = "My responsibility was expanded to include "
+        original_lower = original.lower()
+        
+        if 'bug' in original_lower or 'fix' in original_lower:
+            return "I was tasked with identifying the root cause of the system bug, implementing a comprehensive fix, and ensuring no data loss occurred. My responsibility included coordinating with the QA team and communicating status updates to stakeholders."
+            
+        elif 'team' in original_lower:
+            return "My objective was to resolve the team dynamics issues while maintaining project momentum and team morale. I needed to facilitate better communication, address underlying concerns, and establish sustainable working relationships."
+            
+        elif 'deadline' in original_lower or 'time' in original_lower:
+            return "I was responsible for reorganizing the project timeline, reallocating resources, and finding creative solutions to meet the compressed deadline without sacrificing quality standards."
+            
+        elif 'project' in original_lower:
+            return "My task was to assess the technical constraints, develop alternative approaches, and ensure the project stayed on track while managing stakeholder expectations throughout the process."
+            
         else:
-            base_content = "I was specifically tasked with "
-        
-        return f"{base_content}leading the resolution effort and ensuring minimal business disruption. My key objectives were to identify the root cause, implement a solution, and prevent future occurrences."
-        
+            return "I was specifically assigned to lead the resolution effort, coordinate with relevant stakeholders, and implement a solution that addressed both immediate needs and long-term sustainability."
+            
     except Exception:
-        return "I was responsible for resolving the issue quickly while ensuring quality and preventing similar problems in the future."
+        return "I was responsible for taking ownership of the challenge and delivering a comprehensive solution within the required timeframe."
 
 def _generate_action_content(original: str, evaluation: Dict) -> str:
-    """Generate enhanced Action content with specific verbs"""
+    """Generate enhanced Action content based on original response"""
     try:
-        action_verbs = ['analyzed', 'implemented', 'coordinated', 'developed', 'organized', 'designed', 'executed']
-        existing_actions = [verb for verb in action_verbs if verb in original.lower()]
+        original_lower = original.lower()
         
-        if len(existing_actions) >= 2:
-            base_content = "I expanded my approach by systematically "
-        else:
-            base_content = "I took a structured approach and "
-        
-        return f"""{base_content}following these key steps:
+        if 'bug' in original_lower or 'fix' in original_lower:
+            return """I took a systematic debugging approach:
 
-1. **Analyzed** the situation by gathering data from system logs and identifying performance bottlenecks
-2. **Collaborated** with the development and operations teams to understand the full scope and impact
-3. **Developed** a comprehensive action plan with clear priorities and realistic timelines
-4. **Implemented** targeted solutions while monitoring system performance in real-time
-5. **Communicated** regular updates to leadership and affected teams throughout the process"""
-        
+1. **Analyzed** server logs and error reports to identify patterns and potential root causes
+2. **Reproduced** the issue in a staging environment to understand the exact failure conditions  
+3. **Collaborated** with senior developers to review code changes and validate my hypothesis
+4. **Implemented** a targeted fix that addressed the core issue without affecting other system components
+5. **Tested** the solution thoroughly in multiple environments before deploying to production
+6. **Monitored** system performance post-deployment to ensure the fix was effective"""
+            
+        elif 'team' in original_lower:
+            return """I addressed the team challenges through structured intervention:
+
+1. **Conducted** individual meetings with each team member to understand their perspectives and concerns
+2. **Facilitated** a team retrospective to identify communication gaps and workflow issues
+3. **Established** clearer role definitions and communication protocols for the team
+4. **Implemented** regular check-ins and collaborative tools to improve information sharing
+5. **Provided** coaching and mediation to help team members work through interpersonal conflicts
+6. **Monitored** team dynamics and adjusted approaches based on ongoing feedback"""
+            
+        elif 'deadline' in original_lower or 'time' in original_lower:
+            return """I restructured our approach to meet the compressed timeline:
+
+1. **Analyzed** project requirements to identify must-have vs. nice-to-have features
+2. **Negotiated** scope adjustments with stakeholders to focus on core deliverables
+3. **Reorganized** team assignments to maximize efficiency and leverage individual strengths
+4. **Implemented** daily standups and progress tracking to maintain momentum
+5. **Coordinated** with external vendors to expedite critical resource procurement  
+6. **Established** contingency plans for potential roadblocks and resource constraints"""
+            
+        else:
+            return """I approached the challenge with a structured methodology:
+
+1. **Assessed** the current situation by gathering data and stakeholder input
+2. **Analyzed** root causes and identified key constraints and opportunities
+3. **Developed** multiple solution options with clear pros, cons, and resource requirements
+4. **Collaborated** with cross-functional teams to validate approaches and gain buy-in
+5. **Implemented** the chosen solution with careful change management and communication
+6. **Monitored** progress and made adjustments based on real-time feedback and results"""
+            
     except Exception:
-        return "I took systematic action by analyzing the problem, collaborating with team members, developing a solution plan, implementing fixes, and communicating progress to stakeholders."
+        return "I took systematic action by analyzing the problem, developing a comprehensive plan, collaborating with relevant stakeholders, implementing targeted solutions, and monitoring results throughout the process."
 
 def _generate_result_content(original: str, evaluation: Dict) -> str:
-    """Generate enhanced Result content with metrics"""
+    """Generate enhanced Result content based on original response"""
     try:
+        original_lower = original.lower()
         has_numbers = bool(re.search(r'\d+', original))
         
-        if has_numbers:
-            base_content = "The results exceeded our initial expectations: "
-        else:
-            base_content = "This approach delivered measurable outcomes: "
-        
-        return f"""{base_content}
+        if 'bug' in original_lower or 'fix' in original_lower:
+            return """This systematic approach delivered strong results:
 
-• **Immediate Impact:** Resolved the core issue within 4 hours, restoring full system functionality
-• **Performance Improvement:** Achieved 35% improvement in system response time compared to previous baseline  
-• **Cost Savings:** Prevented potential losses of approximately $50,000 through rapid resolution
-• **Process Enhancement:** Established new monitoring procedures that reduced similar incidents by 60%
-• **Team Recognition:** Received positive feedback from management and was recognized for proactive problem-solving"""
-        
+• **Resolution Time:** Fixed the critical bug within 6 hours, minimizing user impact
+• **System Stability:** Achieved 99.9% uptime in the following month, up from 94% 
+• **User Experience:** Reduced user-reported errors by 85% and improved response times by 40%
+• **Process Improvement:** Implemented automated testing that catches similar issues before production
+• **Cost Impact:** Prevented an estimated $75,000 in lost productivity and customer churn
+• **Recognition:** Received "Problem Solver of the Quarter" award for rapid and effective resolution"""
+            
+        elif 'team' in original_lower:
+            return """The team intervention produced significant improvements:
+
+• **Team Dynamics:** Achieved 90% improvement in team satisfaction scores within 2 months
+• **Project Delivery:** Reduced project delivery time by 25% through better collaboration
+• **Communication:** Decreased miscommunication incidents by 70% through structured processes
+• **Retention:** Prevented potential resignation of 2 key team members who were considering leaving
+• **Productivity:** Increased team velocity by 30% as measured by completed story points
+• **Leadership Growth:** Developed stronger conflict resolution skills that benefited future team management"""
+            
+        elif 'deadline' in original_lower or 'time' in original_lower:
+            return """We successfully met the compressed timeline with excellent results:
+
+• **On-Time Delivery:** Completed the project 2 days ahead of the revised 3-week deadline
+• **Quality Maintained:** Achieved 98% defect-free delivery despite the accelerated schedule
+• **Cost Efficiency:** Delivered under budget by 15% through optimized resource allocation
+• **Client Satisfaction:** Received 9.5/10 satisfaction rating from the client for both quality and speed
+• **Team Learning:** Established new rapid-delivery processes now used across the organization
+• **Future Impact:** Created a reusable framework that reduced similar project timelines by 40%"""
+            
+        else:
+            return """The comprehensive approach yielded measurable success:
+
+• **Primary Objective:** Successfully resolved the core challenge within the designated timeframe
+• **Performance Metrics:** Achieved 95% of established success criteria and KPIs
+• **Stakeholder Satisfaction:** Received positive feedback from 100% of key stakeholders
+• **Process Innovation:** Developed new methodologies that improved efficiency by 30%
+• **Cost Effectiveness:** Delivered solution 20% under projected budget through strategic resource management
+• **Long-term Impact:** Created sustainable improvements that continue to benefit the organization"""
+            
     except Exception:
-        return "Successfully resolved the issue within 4 hours, improved system performance by 35%, prevented $50,000 in potential losses, and implemented monitoring that reduced future incidents by 60%."
+        return "Successfully achieved all primary objectives, improved key performance metrics by 30%, received positive stakeholder feedback, and created lasting improvements for the organization."
 
 def _enhance_strong_response(response: str) -> str:
     """Minor enhancements for already strong responses"""
